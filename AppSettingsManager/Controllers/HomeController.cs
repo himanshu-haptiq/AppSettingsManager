@@ -8,11 +8,16 @@ namespace AppSettingsManager.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IConfiguration _config;
+        private TwilioSettings _twilioSettings;
 
         public HomeController(ILogger<HomeController> logger, IConfiguration config)
         {
             _logger = logger;
             _config = config;
+            _twilioSettings = new TwilioSettings();
+
+            // Bind values from the section to the custom class which have exact same properties
+            _config.GetSection("Twilio").Bind(_twilioSettings);
         }
 
         public IActionResult Index()
@@ -31,7 +36,12 @@ namespace AppSettingsManager.Controllers
             //ViewBag.TwilioAccountSid = _config.GetSection("Twilio").GetValue<string>("AccountSid");
 
             //ViewBag.ThirdLevelSettingValue = _config.GetValue<string>("FirstLevelSetting:SecondLevelSetting:BottomLevelSetting");
-            ViewBag.ThirdLevelSettingValue = _config.GetSection("FirstLevelSetting").GetSection("SecondLevelSetting").GetValue<string>("BottomLevelSetting");
+            //ViewBag.ThirdLevelSettingValue = _config.GetSection("FirstLevelSetting").GetSection("SecondLevelSetting").GetValue<string>("BottomLevelSetting");
+            ViewBag.ThirdLevelSettingValue = _config.GetSection("FirstLevelSetting").GetSection("SecondLevelSetting").GetSection("BottomLevelSetting").Value;
+
+            // When there are multiple values inside a section
+            ViewBag.TwilioPhoneNumber = _twilioSettings.Phone1Number;
+
 
             return View();
         }

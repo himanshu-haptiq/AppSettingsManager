@@ -1,4 +1,7 @@
-﻿<div class="row mb-2">
+﻿@* Inject directly the IConfiguration dependency into view *@
+@inject Microsoft.Extensions.Configuration.IConfiguration _config
+
+<div class="row mb-2">
     <div class="col-md-6">
         <div class="card-body d-flex flex-column align-items-start">
             <strong class="d-inline-block mb-2 text-primary">SendGrid</strong>
@@ -7,15 +10,24 @@
     </div>
     <div class="col-md-6">
         <div class="card-body d-flex flex-column align-items-start">
-            <strong class="d-inline-block mb-2 text-primary">Twilio</strong>
-            <div class="mb-1 text-muted">@ViewBag.TwilioAuthToken</div>
-            <div class="mb-1 text-muted">@ViewBag.TwilioAccountSid</div>
+            <strong class="d-inline-block mb-2 text-primary">Third Level Setting</strong>
+            <div class="mb-1 text-muted">@ViewBag.ThirdLevelSettingValue</div>
         </div>
     </div>
     <div class="col-md-6">
         <div class="card-body d-flex flex-column align-items-start">
-            <strong class="d-inline-block mb-2 text-primary">Third Level Setting</strong>
-            <div class="mb-1 text-muted">@ViewBag.ThirdLevelSettingValue</div>
+            <strong class="d-inline-block mb-2 text-primary">Twilio from Controller</strong>
+            <div class="mb-1 text-muted">@ViewBag.TwilioAuthToken</div>
+            <div class="mb-1 text-muted">@ViewBag.TwilioAccountSid</div>
+            <div class="mb-1 text-muted">@ViewBag.TwilioPhoneNumber</div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-body d-flex flex-column align-items-start">
+            <strong class="d-inline-block mb-2 text-primary">Twilio Injected To View</strong>
+            <div class="mb-1 text-muted">@_config.GetSection("Twilio:AuthToken").Value</div>
+            <div class="mb-1 text-muted">@_config.GetSection("Twilio:AccountSid").Value</div>
+            <div class="mb-1 text-muted">@_config.GetSection("Twilio:PhoneNumber").Value</div>
         </div>
     </div>
 </div>
