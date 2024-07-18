@@ -13,16 +13,22 @@ namespace AppSettingsManager.Controllers
         private TwilioSettings _twilioSettings;
         // When appsettings is mapped in the program.cs
         private readonly IOptions<TwilioSettings> _twilioOptions;
+        private readonly IOptions<SocialLoginSettings> _socialLoginOptions;
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration config, IOptions<TwilioSettings> twilioOptions)
+        public HomeController(ILogger<HomeController> logger, IConfiguration config, IOptions<TwilioSettings> twilioOptions, TwilioSettings twilioSettings, IOptions<SocialLoginSettings> socialLoginOptions)
         {
             _logger = logger;
             _config = config;
-            _twilioSettings = new TwilioSettings();
-            // Bind values from the section to the custom class which have exact same properties
-            _config.GetSection("Twilio").Bind(_twilioSettings);
+
+            // Generally it is preferred to move the below binding logic to the startup class
+            //_twilioSettings = new TwilioSettings();
+            //// Bind values from the section to the custom class which have exact same properties
+            //_config.GetSection("Twilio").Bind(_twilioSettings);
 
             _twilioOptions = twilioOptions;
+
+            _twilioSettings = twilioSettings;
+            _socialLoginOptions = socialLoginOptions;
         }
 
         public IActionResult Index()
@@ -47,9 +53,20 @@ namespace AppSettingsManager.Controllers
             ViewBag.ThirdLevelSettingValue = _config.GetSection("FirstLevelSetting").GetSection("SecondLevelSetting").GetSection("BottomLevelSetting").Value;
 
             // When the custom appsettings class is mapped in the program.cs
-            ViewBag.TwilioAuthToken = _twilioOptions.Value.AuthToken;
-            ViewBag.TwilioAccountSid = _twilioOptions.Value.AccountSid;
-            ViewBag.TwilioPhoneNumber = _twilioOptions.Value.PhoneNumber;
+            // IOptions
+            //ViewBag.TwilioAuthToken = _twilioOptions.Value.AuthToken;
+            //ViewBag.TwilioAccountSid = _twilioOptions.Value.AccountSid;
+            //ViewBag.TwilioPhoneNumber = _twilioOptions.Value.PhoneNumber;
+
+            ViewBag.TwilioAuthToken = _twilioSettings.AuthToken;
+            ViewBag.TwilioAccountSid = _twilioSettings.AccountSid;
+            ViewBag.TwilioPhoneNumber = _twilioSettings.PhoneNumber;
+
+            // Get the connection string
+            ViewBag.ConnectionString = _config.GetConnectionString("AppSettingsManagerDb");
+
+            ViewBag.FacebookKey = _socialLoginOptions.Value.FacebookSettings.Key;
+            ViewBag.GoogleKey = _socialLoginOptions.Value.GoogleSettings.Key;
 
             return View();
         }

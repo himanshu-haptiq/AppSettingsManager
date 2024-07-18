@@ -1,4 +1,6 @@
+using AppSettingsManager;
 using AppSettingsManager.Models;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +9,23 @@ builder.Services.AddControllersWithViews();
 
 // Map custom class file directly to the twilio section inside the appsettings 
 // This profile is preferred when there are lot of values in a appsettings
+// Ioptions
 builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
+
+// The inbuild configure method can handle multi level hierarchies
+builder.Services.Configure<SocialLoginSettings>(builder.Configuration.GetSection("SocialLoginSettings"));
+
+// Steps to Inject TwilioSettings class directly
+// Generally done inside an extension method
+// Generally dont write 3-4 lines of code in program.cs, try to do it one line
+//var twilioSettings = new TwilioSettings();
+//new ConfigureFromConfigurationOptions<TwilioSettings>(builder.Configuration.GetSection("Twilio")).Configure(twilioSettings);
+//builder.Services.AddSingleton(twilioSettings);
+// Replaced the above 4 lines by adding an extension method
+builder.Services.AddConfiguration<TwilioSettings>(builder.Configuration, "Twilio");
+
+// The below line will fail because AddConfiguration extension method can not handle multi level hierarchies
+//builder.Services.AddConfiguration<SocialLoginSettings>(builder.Configuration, "Twilio");
 
 var app = builder.Build();
 
