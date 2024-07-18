@@ -1,7 +1,13 @@
+using AppSettingsManager.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Map custom class file directly to the twilio section inside the appsettings 
+// This profile is preferred when there are lot of values in a appsettings
+builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
 
 var app = builder.Build();
 

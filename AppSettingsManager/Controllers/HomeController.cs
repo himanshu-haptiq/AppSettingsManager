@@ -1,5 +1,6 @@
 using AppSettingsManager.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
 namespace AppSettingsManager.Controllers
@@ -8,16 +9,20 @@ namespace AppSettingsManager.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IConfiguration _config;
+        // When appsettings is not mapped in the program.cs
         private TwilioSettings _twilioSettings;
+        // When appsettings is mapped in the program.cs
+        private readonly IOptions<TwilioSettings> _twilioOptions;
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration config)
+        public HomeController(ILogger<HomeController> logger, IConfiguration config, IOptions<TwilioSettings> twilioOptions)
         {
             _logger = logger;
             _config = config;
             _twilioSettings = new TwilioSettings();
-
             // Bind values from the section to the custom class which have exact same properties
             _config.GetSection("Twilio").Bind(_twilioSettings);
+
+            _twilioOptions = twilioOptions;
         }
 
         public IActionResult Index()
@@ -27,8 +32,10 @@ namespace AppSettingsManager.Controllers
 
             // Get appsettings details from a section named twilio
             // Preferred way to get data from sections
-            ViewBag.TwilioAuthToken = _config.GetValue<string>("Twilio:AuthToken");
-            ViewBag.TwilioAccountSid = _config.GetValue<string>("Twilio:AccountSid");
+            //ViewBag.TwilioAuthToken = _config.GetValue<string>("Twilio:AuthToken");
+            //ViewBag.TwilioAccountSid = _config.GetValue<string>("Twilio:AccountSid");
+            //// When there are multiple values inside a section
+            //ViewBag.TwilioPhoneNumber = _twilioSettings.Phone1Number;
 
             // Less preferred way for getting keys from appsettings sections
             // If number of nested sections increase, then it is a pain
@@ -39,9 +46,10 @@ namespace AppSettingsManager.Controllers
             //ViewBag.ThirdLevelSettingValue = _config.GetSection("FirstLevelSetting").GetSection("SecondLevelSetting").GetValue<string>("BottomLevelSetting");
             ViewBag.ThirdLevelSettingValue = _config.GetSection("FirstLevelSetting").GetSection("SecondLevelSetting").GetSection("BottomLevelSetting").Value;
 
-            // When there are multiple values inside a section
-            ViewBag.TwilioPhoneNumber = _twilioSettings.Phone1Number;
-
+            // When the custom appsettings class is mapped in the program.cs
+            ViewBag.TwilioAuthToken = _twilioOptions.Value.AuthToken;
+            ViewBag.TwilioAccountSid = _twilioOptions.Value.AccountSid;
+            ViewBag.TwilioPhoneNumber = _twilioOptions.Value.PhoneNumber;
 
             return View();
         }
