@@ -1,9 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>02b59494-9f9f-41bc-89ff-394a6fa38992</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="appsettings.Staging.json" />
+  </ItemGroup>
 
 </Project>
