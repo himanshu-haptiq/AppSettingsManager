@@ -25,6 +25,9 @@
       "applicationUrl": "https://localhost:7168;http://localhost:5293",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+        // "SendGridKey": "SendGridKey in Environment Variables 111111111",
+        // When we want to set the Twilio:PhoneNumber in the appsettings, use below syntax
+        // "Twilio__PhoneNumber": "+9999999999 Environment variable phone"
       }
     },
     "IIS Express": {
