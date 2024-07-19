@@ -27,6 +27,21 @@ builder.Services.AddConfiguration<TwilioSettings>(builder.Configuration, "Twilio
 // The below line will fail because AddConfiguration extension method can not handle multi level hierarchies
 //builder.Services.AddConfiguration<SocialLoginSettings>(builder.Configuration, "Twilio");
 
+// Change the default hierarchy to change precedence of secrets, appsettings, environment variables, command line variables etc
+builder.Host.ConfigureAppConfiguration((hostingContext, builder) =>
+{
+    builder.Sources.Clear(); // This will clear the default precedence of items
+    // Last one added will have a higher precedence
+    builder.AddJsonFile("appsettings.json",optional:false, reloadOnChange:true);
+    builder.AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json",optional:true, reloadOnChange:true);
+    if (hostingContext.HostingEnvironment.IsDevelopment())
+    {
+        builder.AddUserSecrets<Program>();
+    }
+    builder.AddEnvironmentVariables();
+    builder.AddCommandLine(args);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
