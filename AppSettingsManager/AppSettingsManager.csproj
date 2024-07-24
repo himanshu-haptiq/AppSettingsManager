@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="appsettings.Staging.json" />
+    <_ContentIncludedByDefault Remove="customJson.json" />
   </ItemGroup>
 
 </Project>

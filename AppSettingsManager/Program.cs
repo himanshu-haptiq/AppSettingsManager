@@ -32,12 +32,13 @@ builder.Host.ConfigureAppConfiguration((hostingContext, builder) =>
 {
     builder.Sources.Clear(); // This will clear the default precedence of items
     // Last one added will have a higher precedence
-    builder.AddJsonFile("appsettings.json",optional:false, reloadOnChange:true);
-    builder.AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json",optional:true, reloadOnChange:true);
+    builder.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+    builder.AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
     if (hostingContext.HostingEnvironment.IsDevelopment())
     {
         builder.AddUserSecrets<Program>();
     }
+    builder.AddJsonFile("customJson.json", optional: true, reloadOnChange: true);
     builder.AddEnvironmentVariables();
     builder.AddCommandLine(args);
 });
